@@ -1,0 +1,12 @@
+Source: ros-dashing-py-trees-ros-tutorials
+Section: misc
+Priority: extra
+Maintainer: Daniel Stonier <d.stonier@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), pyqt5-dev-tools, python3-setuptools, qttools5-dev-tools, ros-dashing-action-msgs, ros-dashing-py-trees, ros-dashing-py-trees-ros, ros-dashing-rclpy, ros-dashing-ros-workspace, python3-all, python3-setuptools
+Homepage: http://ros.org/wiki/py_trees
+Standards-Version: 3.9.2
+
+Package: ros-dashing-py-trees-ros-tutorials
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, pyqt5-dev, python3-pyqt5, python3-pyqt5.qtsvg, python3-sip-dev, ros-dashing-action-msgs, ros-dashing-geometry-msgs, ros-dashing-launch, ros-dashing-launch-ros, ros-dashing-py-trees, ros-dashing-py-trees-ros, ros-dashing-py-trees-ros-interfaces, ros-dashing-rcl-interfaces, ros-dashing-rclpy, ros-dashing-ros2launch, ros-dashing-ros2param, ros-dashing-ros2run, ros-dashing-ros2service, ros-dashing-ros2topic, ros-dashing-sensor-msgs, ros-dashing-std-msgs, ros-dashing-ros-workspace
+Description: ROS2 extensions and behaviours for py_trees.

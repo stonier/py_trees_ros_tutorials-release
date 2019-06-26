@@ -1,0 +1,13 @@
+ros-dashing-py-trees-ros-tutorials (1.0.1-1bionic) bionic; urgency=high
+
+  * [infra] various minor release bugfixes
+
+ -- Daniel Stonier <d.stonier@gmail.com>  Wed, 26 Jun 2019 04:00:00 -0000
+
+ros-dashing-py-trees-ros-tutorials (1.0.0-1bionic) bionic; urgency=high
+
+  * [tutorials] all tutorials except for bagging upgraded for ROS2 dashing
+
+ -- Daniel Stonier <d.stonier@gmail.com>  Sat, 22 Jun 2019 04:00:00 -0000
+
+
