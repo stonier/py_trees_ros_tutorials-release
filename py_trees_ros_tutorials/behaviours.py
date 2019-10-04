@@ -50,7 +50,7 @@ class FlashLedStrip(py_trees.behaviour.Behaviour):
             name: str,
             topic_name: str="/led_strip/command",
             colour: str="red"
-         ):
+    ):
         super(FlashLedStrip, self).__init__(name=name)
         self.topic_name = topic_name
         self.colour = colour
@@ -75,7 +75,7 @@ class FlashLedStrip(py_trees.behaviour.Behaviour):
         self.publisher = self.node.create_publisher(
             msg_type=std_msgs.String,
             topic=self.topic_name,
-            qos_profile=py_trees_ros.utilities.qos_profile_latched_topic()
+            qos_profile=py_trees_ros.utilities.qos_profile_latched()
         )
         self.feedback_message = "publisher created"
 

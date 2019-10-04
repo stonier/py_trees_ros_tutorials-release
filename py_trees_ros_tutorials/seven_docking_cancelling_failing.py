@@ -34,7 +34,7 @@ Tree
 
 .. code-block:: bash
 
-   $ py-trees-render py_trees_ros_tutorials.seven_docking_cancelling_failing.tutorial_create_root
+   $ py-trees-render --with-blackboard-variables py_trees_ros_tutorials.seven_docking_cancelling_failing.tutorial_create_root
 
 .. graphviz:: dot/tutorial-seven-docking-cancelling-failing.dot
    :align: center
@@ -42,7 +42,7 @@ Tree
 .. literalinclude:: ../py_trees_ros_tutorials/seven_docking_cancelling_failing.py
    :language: python
    :linenos:
-   :lines: 201-372
+   :lines: 201-377
    :caption: seven_docking_cancelling_failing.py#tutorial_create_root
 
 Succeeding
@@ -218,16 +218,19 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     scan2bb = py_trees_ros.subscribers.EventToBlackboard(
         name="Scan2BB",
         topic_name="/dashboard/scan",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         variable_name="event_scan_button"
     )
     cancel2bb = py_trees_ros.subscribers.EventToBlackboard(
         name="Cancel2BB",
         topic_name="/dashboard/cancel",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         variable_name="event_cancel_button"
     )
     battery2bb = py_trees_ros.battery.ToBlackboard(
         name="Battery2BB",
         topic_name="/battery/state",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         threshold=30.0
     )
     tasks = py_trees.composites.Selector("Tasks")
@@ -237,18 +240,18 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     )
 
     # Emergency Tasks
-    def check_battery_low_on_blackboard():
-        blackboard = py_trees.blackboard.Blackboard()
+    def check_battery_low_on_blackboard(blackboard: py_trees.blackboard.Blackboard) -> bool:
         return blackboard.battery_low_warning
 
     battery_emergency = py_trees.decorators.EternalGuard(
         name="Battery Low?",
         condition=check_battery_low_on_blackboard,
+        blackboard_keys={"battery_low_warning"},
         child=flash_red
     )
     # Worker Tasks
     scan = py_trees.composites.Sequence(name="Scan")
-    is_scan_requested = py_trees.blackboard.CheckBlackboardVariable(
+    is_scan_requested = py_trees.behaviours.CheckBlackboardVariableValue(
         name="Scan?",
         variable_name='event_scan_button',
         expected_value=True
@@ -261,7 +264,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     )
     failed_flash_green = behaviours.FlashLedStrip(name="Flash Red", colour="red")
     failed_pause = py_trees.timers.Timer("Pause", duration=3.0)
-    result_failed_to_bb = py_trees.blackboard.SetBlackboardVariable(
+    result_failed_to_bb = py_trees.behaviours.SetBlackboardVariable(
         name="Result2BB\n'failed'",
         variable_name='scan_result',
         variable_value='failed'
@@ -276,7 +279,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     )
     scan_or_be_cancelled = py_trees.composites.Selector("Scan or Be Cancelled")
     cancelling = py_trees.composites.Sequence("Cancelling?")
-    is_cancel_requested = py_trees.blackboard.CheckBlackboardVariable(
+    is_cancel_requested = py_trees.behaviours.CheckBlackboardVariableValue(
         name="Cancel?",
         variable_name='event_cancel_button',
         expected_value=True
@@ -288,7 +291,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
         action_goal=py_trees_actions.MoveBase.Goal(),
         generate_feedback_message=lambda msg: "moving home"
     )
-    result_cancelled_to_bb = py_trees.blackboard.SetBlackboardVariable(
+    result_cancelled_to_bb = py_trees.behaviours.SetBlackboardVariable(
         name="Result2BB\n'cancelled'",
         variable_name='scan_result',
         variable_value='cancelled'
@@ -321,7 +324,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
         action_goal=py_trees_actions.MoveBase.Goal(),
         generate_feedback_message=lambda msg: "moving home"
     )
-    result_succeeded_to_bb = py_trees.blackboard.SetBlackboardVariable(
+    result_succeeded_to_bb = py_trees.behaviours.SetBlackboardVariable(
         name="Result2BB\n'succeeded'",
         variable_name='scan_result',
         variable_value='succeeded'
@@ -336,21 +339,24 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
         name="Dock",
         action_type=py_trees_actions.Dock,
         action_name="dock",
-        action_goal=py_trees_actions.Dock.Goal(dock=True),
+        action_goal=py_trees_actions.Dock.Goal(dock=True),  # noqa
         generate_feedback_message=lambda msg: "docking"
     )
 
-    def send_result_to_screen(self):
-        blackboard = py_trees.blackboard.Blackboard()
-        print(console.green +
-              "********** Result: {} **********".format(blackboard.scan_result) +
-              console.reset
-              )
-        return py_trees.common.Status.SUCCESS
+    class SendResult(py_trees.behaviour.Behaviour):
 
-    send_result = py_trees.behaviours.meta.create_behaviour_from_function(send_result_to_screen)(
-        name="Send Result"
-    )
+        def __init__(self, name: str):
+            super().__init__(name="Send Result")
+            self.blackboard.register_key("scan_result", read=True)
+
+        def update(self):
+            print(console.green +
+                  "********** Result: {} **********".format(self.blackboard.scan_result) +
+                  console.reset
+                  )
+            return py_trees.common.Status.SUCCESS
+
+    send_result = SendResult(name="Send Result")
 
     # Fallback task
     idle = py_trees.behaviours.Running(name="Idle")
