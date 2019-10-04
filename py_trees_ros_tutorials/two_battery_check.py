@@ -20,7 +20,7 @@ Tree
 
 .. code-block:: bash
 
-   $ py-trees-render py_trees_ros_tutorials.two_battery_check.tutorial_create_root
+   $ py-trees-render --with-blackboard-variables py_trees_ros_tutorials.two_battery_check.tutorial_create_root
 
 .. graphviz:: dot/tutorial-two-battery-check.dot
    :align: center
@@ -47,7 +47,7 @@ This tree makes use of the :class:`py_trees_ros_tutorials.behaviours.FlashLedStr
 .. literalinclude:: ../py_trees_ros_tutorials/behaviours.py
    :language: python
    :linenos:
-   :lines: 27-108
+   :lines: 29-110
    :caption: behaviours.py#FlashLedStrip
 
 This is a typical ROS behaviour that accepts a ROS node on setup. This delayed style is
@@ -132,6 +132,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     battery2bb = py_trees_ros.battery.ToBlackboard(
         name="Battery2BB",
         topic_name="/battery/state",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         threshold=30.0
     )
     tasks = py_trees.composites.Selector("Tasks")
@@ -140,13 +141,13 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
         colour="red"
     )
 
-    def check_battery_low_on_blackboard():
-        blackboard = py_trees.blackboard.Blackboard()
+    def check_battery_low_on_blackboard(blackboard: py_trees.blackboard.Blackboard) -> bool:
         return blackboard.battery_low_warning
 
     battery_emergency = py_trees.decorators.EternalGuard(
         name="Battery Low?",
         condition=check_battery_low_on_blackboard,
+        blackboard_keys={"battery_low_warning"},
         child=flash_led_strip
     )
     idle = py_trees.behaviours.Running(name="Idle")
