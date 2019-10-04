@@ -1,3 +1,26 @@
+## py_trees_ros_tutorials (dashing) - 1.0.4-1
+
+The packages in the `py_trees_ros_tutorials` repository were released into the `dashing` distro by running `/usr/bin/bloom-release --track dashing --rosdistro dashing py_trees_ros_tutorials` on `Fri, 04 Oct 2019 02:48:58 -0000`
+
+The `py_trees_ros_tutorials` package was released.
+
+Version of package(s) in repository `py_trees_ros_tutorials`:
+
+- upstream repository: https://github.com/splintered-reality/py_trees_ros_tutorials.git
+- release repository: https://github.com/stonier/py_trees_ros_tutorials-release.git
+- rosdistro version: `1.0.3-1`
+- old version: `1.0.3-1`
+- new version: `1.0.4-1`
+
+Versions of tools used:
+
+- bloom version: `0.8.0`
+- catkin_pkg version: `0.4.10`
+- rosdep version: `0.15.0`
+- rosdistro version: `0.7.0`
+- vcstools version: `0.1.40`
+
+
 ## py_trees_ros_tutorials (dashing) - 1.0.3-1
 
 The packages in the `py_trees_ros_tutorials` repository were released into the `dashing` distro by running `/usr/bin/bloom-release --track dashing --rosdistro dashing py_trees_ros_tutorials` on `Sat, 17 Aug 2019 03:04:03 -0000`
