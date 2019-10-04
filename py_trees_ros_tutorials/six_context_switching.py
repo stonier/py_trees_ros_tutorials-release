@@ -32,7 +32,7 @@ Tree
 
 .. code-block:: bash
 
-   $ py-trees-render py_trees_ros_tutorials.six_context_switching.tutorial_create_root
+   $ py-trees-render --with-blackboard-variables py_trees_ros_tutorials.six_context_switching.tutorial_create_root
 
 .. graphviz:: dot/tutorial-six-context-switching.dot
    :align: center
@@ -40,7 +40,7 @@ Tree
 .. literalinclude:: ../py_trees_ros_tutorials/six_context_switching.py
    :language: python
    :linenos:
-   :lines: 123-215
+   :lines: 123-216
    :caption: six_context_switching.py#tutorial_create_root
 
 Behaviour
@@ -140,11 +140,13 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     scan2bb = py_trees_ros.subscribers.EventToBlackboard(
         name="Scan2BB",
         topic_name="/dashboard/scan",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         variable_name="event_scan_button"
     )
     battery2bb = py_trees_ros.battery.ToBlackboard(
         name="Battery2BB",
         topic_name="/battery/state",
+        qos_profile=py_trees_ros.utilities.qos_profile_unlatched(),
         threshold=30.0
     )
     tasks = py_trees.composites.Selector("Tasks")
@@ -154,18 +156,18 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     )
 
     # Emergency Tasks
-    def check_battery_low_on_blackboard():
-        blackboard = py_trees.blackboard.Blackboard()
+    def check_battery_low_on_blackboard(blackboard: py_trees.blackboard.Blackboard) -> bool:
         return blackboard.battery_low_warning
 
     battery_emergency = py_trees.decorators.EternalGuard(
         name="Battery Low?",
         condition=check_battery_low_on_blackboard,
+        blackboard_keys={"battery_low_warning"},
         child=flash_red
     )
     # Worker Tasks
     scan = py_trees.composites.Sequence(name="Scan")
-    is_scan_requested = py_trees.blackboard.CheckBlackboardVariable(
+    is_scan_requested = py_trees.behaviours.CheckBlackboardVariableValue(
         name="Scan?",
         variable_name='event_scan_button',
         expected_value=True
@@ -173,7 +175,7 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
     scan_preempt = py_trees.composites.Selector(name="Preempt?")
     is_scan_requested_two = py_trees.decorators.SuccessIsRunning(
         name="SuccessIsRunning",
-        child=py_trees.blackboard.CheckBlackboardVariable(
+        child=py_trees.behaviours.CheckBlackboardVariableValue(
             name="Scan?",
             variable_name='event_scan_button',
             expected_value=True
