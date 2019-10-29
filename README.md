@@ -1,3 +1,26 @@
+## py_trees_ros_tutorials (eloquent) - 1.0.6-1
+
+The packages in the `py_trees_ros_tutorials` repository were released into the `eloquent` distro by running `/usr/bin/bloom-release --edit-track --track eloquent --rosdistro eloquent py_trees_ros_tutorials` on `Tue, 29 Oct 2019 15:40:33 -0000`
+
+The `py_trees_ros_tutorials` package was released.
+
+Version of package(s) in repository `py_trees_ros_tutorials`:
+
+- upstream repository: https://github.com/splintered-reality/py_trees_ros_tutorials.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.0.6-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.0`
+- catkin_pkg version: `0.4.13`
+- rosdep version: `0.15.2`
+- rosdistro version: `0.7.5`
+- vcstools version: `0.1.42`
+
+
 ## py_trees_ros_tutorials (dashing) - 1.0.5-1
 
 The packages in the `py_trees_ros_tutorials` repository were released into the `dashing` distro by running `/usr/bin/bloom-release --track dashing --rosdistro dashing py_trees_ros_tutorials` on `Fri, 04 Oct 2019 13:04:40 -0000`
