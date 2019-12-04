@@ -347,7 +347,11 @@ def tutorial_create_root() -> py_trees.behaviour.Behaviour:
 
         def __init__(self, name: str):
             super().__init__(name="Send Result")
-            self.blackboard.register_key("scan_result", read=True)
+            self.blackboard = self.attach_blackboard_client(name=self.name)
+            self.blackboard.register_key(
+                key="scan_result",
+                access=py_trees.common.Access.READ
+            )
 
         def update(self):
             print(console.green +
@@ -390,8 +394,16 @@ def tutorial_main():
     )
     try:
         tree.setup(timeout=15)
-    except Exception as e:
+    except py_trees_ros.exceptions.TimedOutError as e:
         console.logerror(console.red + "failed to setup the tree, aborting [{}]".format(str(e)) + console.reset)
+        tree.shutdown()
+        rclpy.shutdown()
+        sys.exit(1)
+    except KeyboardInterrupt:
+        # not a warning, nor error, usually a user-initiated shutdown
+        console.logerror("tree setup interrupted")
+        tree.shutdown()
+        rclpy.shutdown()
         sys.exit(1)
 
     tree.tick_tock(period_ms=1000.0)
