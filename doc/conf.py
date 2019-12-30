@@ -46,9 +46,9 @@ copyright = u'2019, Daniel Stonier'
 # built documents.
 #
 # The short X.Y version.
-version = "1.0"
+version = "2.0"
 # The full version, including alpha/beta/rc tags.
-release = "1.0.0"
+release = "2.0.1"
 
 ##############################################################################
 # Regular Sphinx Configuration
@@ -62,9 +62,9 @@ exclude_patterns = ['.build', 'weblinks.rst']
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'py_trees': ('https://py-trees.readthedocs.io/en/release-1.2.x', None),
-    'py_trees_ros': ('https://py-trees-ros.readthedocs.io/en/release-1.0.x', None),
-    'rclpy': ('http://docs.ros2.org/dashing/api/rclpy/', None),
+    'py_trees': ('https://py-trees.readthedocs.io/en/release-2.0.x', None),
+    'py_trees_ros': ('https://py-trees-ros.readthedocs.io/en/release-2.0.x', None),
+    'rclpy': ('http://docs.ros2.org/eloquent/api/rclpy/', None),
 }
 
 # -- Options for HTML output ----------------------------------------------
